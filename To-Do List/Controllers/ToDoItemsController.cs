@@ -22,9 +22,8 @@ namespace To_Do_List.Controllers
         // GET: ToDoItems
         public async Task<IActionResult> Index()
         {
-              return _context.ToDoItem != null ? 
-                          View(await _context.ToDoItem.ToListAsync()) :
-                          Problem("Entity set 'ToDoListDbContext.ToDoItem'  is null.");
+            var toDoListDbContext = _context.ToDoItem.Include(t => t.List);
+            return View(await toDoListDbContext.ToListAsync());
         }
 
         // GET: ToDoItems/Details/5
@@ -36,6 +35,7 @@ namespace To_Do_List.Controllers
             }
 
             var toDoItem = await _context.ToDoItem
+                .Include(t => t.List)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (toDoItem == null)
             {
@@ -48,6 +48,7 @@ namespace To_Do_List.Controllers
         // GET: ToDoItems/Create
         public IActionResult Create()
         {
+            ViewData["ListId"] = new SelectList(_context.ToDoList, "Id", "ListName");
             return View();
         }
 
@@ -56,14 +57,25 @@ namespace To_Do_List.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ItemTitle,Date,Priority,Description")] ToDoItem toDoItem)
+        public async Task<IActionResult> Create([Bind("Id,ItemTitle,List,ListId,Date,Priority,Description,IsComplete")] ToDoItem toDoItem)
         {
+            var list = _context.ToDoList.First(l => l.Id == toDoItem.ListId);
+            if (list == null) 
+            { 
+                return NotFound(); 
+            } else
+            {
+                toDoItem.List = list;
+            }
+
             if (ModelState.IsValid)
             {
+                _context.ToDoList.First(t => t.Id == toDoItem.ListId).Items.Add(toDoItem);
                 _context.Add(toDoItem);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "ToDoLists");
             }
+            ViewData["ListId"] = new SelectList(_context.ToDoList, "Id", "ListName", toDoItem.ListId);
             return View(toDoItem);
         }
 
@@ -80,6 +92,7 @@ namespace To_Do_List.Controllers
             {
                 return NotFound();
             }
+            ViewData["ListId"] = new SelectList(_context.ToDoList, "Id", "ListName", toDoItem.ListId);
             return View(toDoItem);
         }
 
@@ -88,7 +101,7 @@ namespace To_Do_List.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ItemTitle,Date,Priority,Description")] ToDoItem toDoItem)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ItemTitle,ListId,Date,Priority,Description,IsComplete")] ToDoItem toDoItem)
         {
             if (id != toDoItem.Id)
             {
@@ -115,6 +128,7 @@ namespace To_Do_List.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["ListId"] = new SelectList(_context.ToDoList, "Id", "ListName", toDoItem.ListId);
             return View(toDoItem);
         }
 
@@ -127,6 +141,7 @@ namespace To_Do_List.Controllers
             }
 
             var toDoItem = await _context.ToDoItem
+                .Include(t => t.List)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (toDoItem == null)
             {

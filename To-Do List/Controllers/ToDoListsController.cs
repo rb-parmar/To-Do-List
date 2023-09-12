@@ -62,7 +62,7 @@ namespace To_Do_List.Controllers
             {
                 _context.Add(toDoList);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "ToDoLists", new {id = toDoList.Id});
             }
             return View(toDoList);
         }
@@ -148,6 +148,10 @@ namespace To_Do_List.Controllers
             var toDoList = await _context.ToDoList.FindAsync(id);
             if (toDoList != null)
             {
+                foreach(var item in toDoList.Items)
+                {
+                    _context.ToDoItem.Remove(item);
+                }
                 _context.ToDoList.Remove(toDoList);
             }
             

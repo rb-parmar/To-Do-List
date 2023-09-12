@@ -16,6 +16,9 @@
                 @Html.DisplayNameFor(model => model.ItemTitle)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.List)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Date)
             </th>
             <th>
@@ -23,6 +26,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsComplete)
             </th>
             <th></th>
         </tr>
@@ -34,6 +40,9 @@
                 @Html.DisplayFor(modelItem => item.ItemTitle)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.List.ListName)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td>
@@ -41,6 +50,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsComplete)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

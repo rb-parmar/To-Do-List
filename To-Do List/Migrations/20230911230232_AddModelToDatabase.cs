@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace To_Do_List.Migrations
 {
     /// <inheritdoc />
-    public partial class addModelsToDatabase : Migration
+    public partial class AddModelToDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,25 +31,27 @@ namespace To_Do_List.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ItemTitle = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    ListId = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Priority = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    ToDoListId = table.Column<int>(type: "int", nullable: true)
+                    IsComplete = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ToDoItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ToDoItem_ToDoList_ToDoListId",
-                        column: x => x.ToDoListId,
+                        name: "FK_ToDoItem_ToDoList_ListId",
+                        column: x => x.ListId,
                         principalTable: "ToDoList",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ToDoItem_ToDoListId",
+                name: "IX_ToDoItem_ListId",
                 table: "ToDoItem",
-                column: "ToDoListId");
+                column: "ListId");
         }
 
         /// <inheritdoc />
