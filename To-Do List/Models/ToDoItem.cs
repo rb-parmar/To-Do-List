@@ -17,7 +17,7 @@ namespace To_Do_List.Models
 
         [ForeignKey("List")]
         public int ListId { get; set; }
-        public ToDoList? List { get; set; }
+        public ToDoList List { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]

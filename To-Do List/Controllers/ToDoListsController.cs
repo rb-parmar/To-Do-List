@@ -23,7 +23,7 @@ namespace To_Do_List.Controllers
         public async Task<IActionResult> Index()
         {
               return _context.ToDoList != null ? 
-                          View(await _context.ToDoList.ToListAsync()) :
+                          View(await _context.ToDoList.Include(l => l.Items).ToListAsync()) :
                           Problem("Entity set 'ToDoListDbContext.ToDoList'  is null.");
         }
 
@@ -36,6 +36,7 @@ namespace To_Do_List.Controllers
             }
 
             var toDoList = await _context.ToDoList
+                .Include(l => l.Items)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (toDoList == null)
             {
@@ -127,7 +128,9 @@ namespace To_Do_List.Controllers
             }
 
             var toDoList = await _context.ToDoList
+                .Include(l => l.Items)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (toDoList == null)
             {
                 return NotFound();
@@ -162,6 +165,23 @@ namespace To_Do_List.Controllers
         private bool ToDoListExists(int id)
         {
           return (_context.ToDoList?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        public IActionResult toggleChange(int id)
+        {
+            ToDoItem foundItem = _context.ToDoItem.First(i => i.Id == id);
+            if (foundItem == null)
+            {
+                return NotFound();
+            } else
+            {
+                foundItem.IsComplete = !foundItem.IsComplete;
+                _context.SaveChanges();
+                return RedirectToAction("Details");
+            }
+
+
+            return Ok();
         }
     }
 }

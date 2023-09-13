@@ -4,7 +4,11 @@ using To_Do_List.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+});
+
 builder.Services.AddDbContext<ToDoListDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("ToDoListConnectionString") ?? throw new InvalidOperationException("Connection string 'HotelSystemReviewContext' not found.")
 ));

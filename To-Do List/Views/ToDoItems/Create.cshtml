@@ -11,24 +11,12 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
+            <input type="hidden" asp-for="ListId" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="ItemTitle" class="control-label"></label>
                 <input asp-for="ItemTitle" class="form-control" />
                 <span asp-validation-for="ItemTitle" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ListId" class="control-label"></label>
-                <select asp-for="ListId" class ="form-control" asp-items="ViewBag.ListId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="List" class="control-label"></label>
-                <select asp-for="List" class="form-control" asp-items="ViewBag.ListId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Priority" class="control-label"></label>
@@ -44,12 +32,12 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
+            @*<div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsComplete" /> 
                     @Html.DisplayNameFor(model => model.IsComplete)
                 </label>
-            </div>
+            </div>*@
             <div class="form-group mt-4">
                 <input type="submit" value="Create" class="btn btn-primary" />
                 <a asp-action="Details" asp-controller="ToDoLists" asp-route-id="@Model?.ListId" class="btn btn-secondary">Back to List</a>

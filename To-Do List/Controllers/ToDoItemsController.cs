@@ -46,10 +46,10 @@ namespace To_Do_List.Controllers
         }
 
         // GET: ToDoItems/Create
-        public IActionResult Create()
+        public IActionResult Create(int listId)
         {
-            ViewData["ListId"] = new SelectList(_context.ToDoList, "Id", "ListName");
-            return View();
+            ToDoItem item = new() { ListId = listId };
+            return View(item);
         }
 
         // POST: ToDoItems/Create
@@ -57,9 +57,9 @@ namespace To_Do_List.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ItemTitle,List,ListId,Date,Priority,Description,IsComplete")] ToDoItem toDoItem)
+        public async Task<IActionResult> Create([Bind("Id,ListId,ItemTitle,Priority,Description")] ToDoItem toDoItem)
         {
-            var list = _context.ToDoList.First(l => l.Id == toDoItem.ListId);
+            ToDoList? list = _context.ToDoList.FirstOrDefault(l => l.Id == toDoItem.ListId);
             if (list == null) 
             { 
                 return NotFound(); 
@@ -67,6 +67,9 @@ namespace To_Do_List.Controllers
             {
                 toDoItem.List = list;
             }
+
+            toDoItem.Date = DateTime.Now;
+            TryValidateModel(toDoItem);
 
             if (ModelState.IsValid)
             {
