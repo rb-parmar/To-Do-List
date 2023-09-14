@@ -34,11 +34,11 @@ namespace To_Do_List.Models
         [DefaultValue(false)]
         public bool IsComplete { get; set; }
 
-        public enum PriorityEnum
-        {
-            High,
-            Medium,
-            Low
-        } 
     }
+    public enum PriorityEnum
+    {
+        High,
+        Medium,
+        Low
+    } 
 }

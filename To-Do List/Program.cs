@@ -10,7 +10,7 @@ builder.Services.AddControllersWithViews(options =>
 });
 
 builder.Services.AddDbContext<ToDoListDbContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ToDoListConnectionString") ?? throw new InvalidOperationException("Connection string 'HotelSystemReviewContext' not found.")
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ToDoListConnectionString") ?? throw new InvalidOperationException("Connection string 'ToDoListConnectionString' not found.")
 ));
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 

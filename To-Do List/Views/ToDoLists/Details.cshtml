@@ -21,15 +21,14 @@
             Show completed items:
         </dt>
         <dd class="col-sm-10">
-            <input type="checkbox" value="Show completed items" onchange="showCompletedItems"/>
+            <input type="checkbox" value="Show completed items" id="showCompletedItems" onchange="showCompletedItems"/>
         </dd>
 
-        <dt class="col-sm-2">
-            Not Completed Items:
-        </dt>
-        <table class="table table-hover ms-5">
+        <br />
+        @*Table for Completed Items*@
+        <table class="table table-hover ms-3 mt-3" id="completedItemsTable" style="display:none">
             <thead>
-                <tr>
+                <tr class="table-dark">
                     <th scope="col">Item Name</th>
                     <th scope="col">Date Created</th>
                     <th scope="col">Priority</th>
@@ -38,88 +37,164 @@
                 </tr>
             </thead>
             <tbody>
-            @{
-                List<ToDoItem> highPriority = new List<ToDoItem>();
-                List<ToDoItem> mediumPriority = new List<ToDoItem>();
-                List<ToDoItem> lowPriority = new List<ToDoItem>();
-            }
-            @foreach(var item in Model.Items)
-            {
-                    if (item.Priority == ToDoItem.PriorityEnum.High)
-                    {
-                        highPriority.Add(item);
-                    } else if (item.Priority == ToDoItem.PriorityEnum.Medium)
-                    {
-                        mediumPriority.Add(item);
-                    } else
-                    {
-                        lowPriority.Add(item);
-                    }
-            }
-                @{
-                    if (highPriority.Count != 0) 
-                    {
-                        <tr class="table-active">
-                            <th>High Priority Tasks</th>
-                        </tr>
-                        highPriority = highPriority.OrderByDescending(l => l.Date).ToList();
-                        foreach(ToDoItem item in highPriority) 
-                    {
-                        <tr class="table-active">
-                            <td scope="row">@item.ItemTitle</td>
-                            <td>@item.Date</td>
-                            <td>@item.Priority</td>
-                            <td>@item.Description</td>
-                            <td><input type="checkbox" id="IsComplete" name="IsComplete" onchange="toggleComplete(@item.Id)"/></td>
-                        </tr>
-                    }
-                }
-            }
-            @{
-                if (mediumPriority.Count != 0) 
+                @foreach (IGrouping<PriorityEnum, ToDoItem> group in Model.Items.Where(i => i.IsComplete).GroupBy(i => i.Priority))
                 {
-                    <tr class="table-active">
-                        <th>Medium Priority Tasks</th>
+                    <tr class="table-success" style="width:100%">
+                        <th>@group.Key.ToString() Priority Tasks</th>
                     </tr>
-                    mediumPriority = mediumPriority.OrderByDescending(l => l.Date).ToList();
-                    foreach(ToDoItem item in mediumPriority) 
+                    // highPriorityFalse = highPriorityFalse.OrderByDescending(l => l.Date).ToList();
+                    foreach (ToDoItem item in group.OrderByDescending(i => i.Date))
                     {
                         <tr class="table-active">
                             <td scope="row">@item.ItemTitle</td>
-                            <td>@item.Date</td>
-                            <td>@item.Priority</td>
-                            <td>@item.Description</td>
-                            <td><input type="checkbox" id="IsComplete" name="IsComplete" onchange="toggleComplete(@item.Id)"/></td>
+                            <td scope="row">@item.Date</td>
+                            <td scope="row">@item.Priority</td>
+                            <td scope="row">@item.Description</td>
+                            <td scope="row"><input type="checkbox" id="IsComplete" name="IsComplete" onchange="toggleComplete(@item.Id)" @(item.IsComplete ? "checked" : "") /></td>
                         </tr>
                     }
                 }
-            }
-            @{
-                if (lowPriority.Count != 0) 
-                { 
-                    <tr class="table-active">
-                        <th>Low Priority Tasks</th>
-                    </tr>   
-                    lowPriority = lowPriority.OrderByDescending(l => l.Date).ToList();
-
-                    foreach(ToDoItem item in lowPriority) 
-                    {
-                        <tr class="table-active">
-                            <td scope="row">@item.ItemTitle</td>
-                            <td>@item.Date</td>
-                            <td>@item.Priority</td>
-                            <td>@item.Description</td>
-                            <td><input type="checkbox" id="IsComplete" name="IsComplete" onchange="toggleComplete(@item.Id)"/></td>
-                        </tr>
-                    }
-                }
-            }
             </tbody>
         </table>
+
+        <dt class="col-sm-2 mt-4">
+            Not Completed Items:
+        </dt>
+
+        @*Table for NOT Completed items*@
+        <table class="table table-hover ms-3 mt-3" id="notCompletedItemsTable">
+            <thead>
+                <tr class="table-dark">
+                    <th scope="col">Item Name</th>
+                    <th scope="col">Date Created</th>
+                    <th scope="col">Priority</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Is Complete?</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (IGrouping<PriorityEnum, ToDoItem> group in Model.Items.Where(i => !i.IsComplete).GroupBy(i => i.Priority))
+                {
+                    string className = group.Key switch
+                    {
+                        PriorityEnum.High => "table-warning",
+                        PriorityEnum.Medium => "table-info",
+                        PriorityEnum.Low => "table-secondary",
+                        _ => ""
+                    };
+                    <tr class="@className">
+                        <th>@group.Key.ToString() Priority Tasks</th>
+                    </tr>
+                    // highPriorityFalse = highPriorityFalse.OrderByDescending(l => l.Date).ToList();
+                    foreach (ToDoItem item in group.OrderByDescending(i => i.Date))
+                    {
+                        <tr class="table-active">
+                            <td scope="row">@item.ItemTitle</td>
+                            <td scope="row">@item.Date</td>
+                            <td scope="row">@item.Priority</td>
+                            <td scope="row">@item.Description</td>
+                            <td scope="row"><input type="checkbox" id="IsComplete" name="IsComplete" onchange="toggleComplete(@item.Id)" @(item.IsComplete ? "checked" : "") /></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+            @* My Method *@
+            @*
+            <tbody>
+                
+
+                @{
+                List<ToDoItem> highPriorityFalse = new List<ToDoItem>();
+                List<ToDoItem> mediumPriorityFasle = new List<ToDoItem>();
+                List<ToDoItem> lowPriorityFalse = new List<ToDoItem>();
+
+                //List<ToDoItem> highPriorityFalse = new List<ToDoItem>();
+                //List<ToDoItem> mediumPriorityFasle = new List<ToDoItem>();
+                //List<ToDoItem> lowPriorityFalse = new List<ToDoItem>();
+
+                }
+
+                @foreach(var item in Model.Items)
+                {
+                if (item.Priority == PriorityEnum.High && !item.IsComplete)
+                {
+                highPriorityFalse.Add(item);
+                } else if (item.Priority == PriorityEnum.Medium && !item.IsComplete)
+                {
+                mediumPriorityFasle.Add(item);
+                } else if (!item.IsComplete)
+                {
+                lowPriorityFalse.Add(item);
+                }
+                }
+
+                @{
+                if (highPriorityFalse.Count != 0)
+                {
+                <tr class="table-warning">
+                <th>High Priority Tasks</th>
+                </tr>
+                highPriorityFalse = highPriorityFalse.OrderByDescending(l => l.Date).ToList();
+                foreach(ToDoItem item in highPriorityFalse)
+                {
+                <tr class="table-active">
+                <td scope="row">@item.ItemTitle</td>
+                <td>@item.Date</td>
+                <td>@item.Priority</td>
+                <td>@item.Description</td>
+                <td><input type="checkbox" id="IsComplete" name="IsComplete" onchange="toggleComplete(@item.Id)" @(item.IsComplete ? "checked" : "") /></td>
+                </tr>
+                }
+                }
+                }
+
+                @{
+                if (mediumPriorityFasle.Count != 0)
+                {
+                <tr class="table-info">
+                <th>Medium Priority Tasks</th>
+                </tr>
+                mediumPriorityFasle = mediumPriorityFasle.OrderByDescending(l => l.Date).ToList();
+                foreach(ToDoItem item in mediumPriorityFasle)
+                {
+                <tr class="table-active">
+                <td scope="row">@item.ItemTitle</td>
+                <td>@item.Date</td>
+                <td>@item.Priority</td>
+                <td>@item.Description</td>
+                <td><input type="checkbox" id="IsComplete" name="IsComplete" onchange="toggleComplete(@item.Id)" @(item.IsComplete ? "checked" : "")/></td>
+                </tr>
+                }
+                }
+                }
+                @{
+                if (lowPriorityFalse.Count != 0)
+                {
+                <tr class="table-secondary">
+                <th>Low Priority Tasks</th>
+                </tr>
+                lowPriorityFalse = lowPriorityFalse.OrderByDescending(l => l.Date).ToList();
+
+                foreach(ToDoItem item in lowPriorityFalse)
+                {
+                <tr class="table-active">
+                <td scope="row" class="">@item.ItemTitle</td>
+                <td>@item.Date</td>
+                <td>@item.Priority</td>
+                <td>@item.Description</td>
+                <td><input type="checkbox" id="IsComplete" name="IsComplete" onchange="toggleComplete(@item.Id)" @(item.IsComplete ? "checked" : "")/></td>
+                </tr>
+                }
+                }
+                }
+            </tbody>
+            *@
+        
         
                
     </dl>
-    <a asp-controller="ToDoItems" asp-action="Create" asp-route-listId="@Model.Id" class="btn btn-primary">Add New Item</a>
+    <a asp-controller="ToDoItems" asp-action="Create" asp-route-listId="@Model.Id" class="btn btn-success"><i class="bi bi-plus-circle"></i> Add New Item</a>
 </div>
 <div class="mt-4">
     <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary me-2">Edit</a> |
@@ -131,11 +206,41 @@
     <script>
         // Handle checkbox change event
         function toggleComplete(id) {
-            
+            fetch(`/ToDoLists/HandleToggle/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    console.error("Request failed!");
+                }
+            }).catch(error => {
+                console.error(error);
+            });
         }
 
-        function showCompletedItems() {
+        $(document).ready(function showCompletedItems() {
+            // Find the checkbox element
+            var checkbox = $("#showCompletedItems");
 
-        }
+            // Find the HTML tag you want to show/hide
+            var htmlTag = $("#completedItemsTable");
+
+            // Attach an event handler to the checkbox
+            checkbox.change(function () {
+                // Check if the checkbox is checked
+                if (checkbox.prop("checked")) {
+                    // If checked, display the HTML tag
+                    htmlTag.show();
+                } else {
+                    // If not checked, hide the HTML tag
+                    htmlTag.hide();
+                }
+            });
+        });
     </script>
 }

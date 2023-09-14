@@ -167,7 +167,7 @@ namespace To_Do_List.Controllers
           return (_context.ToDoList?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        public IActionResult toggleChange(int id)
+        public IActionResult HandleToggle(int id)
         {
             ToDoItem foundItem = _context.ToDoItem.First(i => i.Id == id);
             if (foundItem == null)
