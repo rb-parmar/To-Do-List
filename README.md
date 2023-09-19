@@ -15,8 +15,8 @@ Developed a user-friendly and feature-rich ASP.NET MVC application to that allow
 ### Sample Images
 
 Index Page:
-<img src="C:\Users\rushi\Pictures\Screenshots\Index page.png" style="width:400px height:200px left:0px"> 
+<img src="https://github.com/rb-parmar/Advanced_Database_And_ORM_Concepts_FinalAssessment/blob/main/To-Do%20List/Images/Index%20page.png" style="width:400px height:200px left:0px"> 
 
 Details Page:
-<img src="C:\Users\rushi\Pictures\Screenshots\Details.png" style="width:500px height:400px left:0px"> 
+<img src="https://github.com/rb-parmar/Advanced_Database_And_ORM_Concepts_FinalAssessment/blob/main/To-Do%20List/Images/Details.png" style="width:500px height:400px left:0px"> 
 
