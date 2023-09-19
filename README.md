@@ -15,8 +15,8 @@ Developed a user-friendly and feature-rich ASP.NET MVC application to that allow
 ### Sample Images
 
 Index Page:
-<img src="/Images/Index.png" style="width:400px height:200px left:0px"> 
+<img src="C:\Users\rushi\Pictures\Screenshots\Index page.png" style="width:400px height:200px left:0px"> 
 
 Details Page:
-<img src="/Images/Index.png" style="width:500px height:400px left:0px"> 
+<img src="C:\Users\rushi\Pictures\Screenshots\Details.png" style="width:500px height:400px left:0px"> 
 
